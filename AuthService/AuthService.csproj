@@ -107,7 +107,7 @@
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="service_dbg.bat">
+    <None Include="service_dbg.batch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
