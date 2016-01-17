@@ -1,0 +1,94 @@
+﻿application
+{  
+	auth-service-dbg-log=false
+	auth-service-info-log=true
+	auth-service-err-log=true
+
+    // disk-root=$"c:\nfx\"
+
+    object-store 
+    { 
+        name="Main Object Store"
+        guid="76F44831-E92A-42BB-9294-E806300405C9"
+        object-life-span-ms="180000"
+        bucket-count="1024"
+                 
+        provider
+        { 
+            name="Disk Object Store Provider"
+            type="NFX.ApplicationModel.Volatile.NOPObjectStoreProvider"
+            //load-limit="0"
+            //root-path=$(/$disk-root)
+            ////format="msbinary"
+            //known-types 
+            //{
+            //  known{ type="BusinessLogic.PatientRecord, BusinessLogic" }
+            //}
+        }
+    }
+  
+    glue
+    {   
+
+		default-timeout-ms=120000
+
+        bindings
+        {
+			binding 
+			{
+			name="mpx" type="NFX.Glue.Native.MpxBinding, NFX" 
+				//server-dump="Message"
+				//dump-path=$(@/$disk-root)msg.dump
+				//measure-stat-times="true"
+         
+				server-transport
+				{
+					// idle-timeout-ms=120000
+					// instrument-transport-stat="true" 
+				}         
+			}
+
+            binding
+            {
+                name="sync"
+                type="NFX.Glue.Native.SyncBinding, NFX"
+				server-transport
+				{
+					//rcv-buf-size=1048576
+					//snd-buf-size=1048576
+
+					// Specifies when server transports get auto-closed. Interval is measured in ms.
+					// Zero means indefinite/never closed transport.
+					idle-timeout-ms=0
+
+					// Imposes a limit on number of active client transports per remote address. 
+					// Once this limit is reached the binding will block until it can acquire
+					// an existing transport instance. 
+					// Set value to zero to remove the limit.
+					max-count=0
+
+					rcv-timeout=180000
+					snd-timeout=180000
+				}
+            }
+        }
+        
+        servers
+        {
+            server
+            {
+                node="sync://localhost:8080"
+                contract-servers=$"
+					AuthService.Server.AuthService, AuthService.Server
+				"
+            }
+			            server
+            {
+				node="mpx://localhost:8081"
+                contract-servers=$"
+					AuthService.Server.AuthService, AuthService.Server
+				"
+            }
+        }
+    }
+}

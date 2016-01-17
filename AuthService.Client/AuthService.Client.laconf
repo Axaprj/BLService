@@ -1,0 +1,69 @@
+﻿application
+{    
+	auth-service-node="sync://localhost:8080"
+	// auth-service-node="mpx://localhost:8081"
+
+    glue
+    {   
+		default-timeout-ms=120000
+
+        bindings
+        {
+			binding 
+			{
+			name="mpx" type="NFX.Glue.Native.MpxBinding, NFX" 
+				//server-dump="Message"
+				//dump-path=$(@/$disk-root)msg.dump
+				//  measure-stat-times="true"
+         
+				client-transport
+				{
+					// idle-timeout-ms=120000
+					// instrument-transport-stat="true" 
+				}         
+			}
+
+            binding
+            {
+                name="sync"
+                type="NFX.Glue.Native.SyncBinding, NFX"
+				client-transport
+				{
+					//rcv-buf-size=1048576
+					//snd-buf-size=1048576
+
+					//Specifies when client transports get auto-closed. Interval is measured in ms.
+					//Zero means indefinite/never closed transport.
+					idle-timeout-ms=0
+
+					// Imposes a limit on number of active client transports per remote address. 
+					// Once this limit is reached the binding will block until it can acquire
+					// an existing transport instance. 
+					// Set value to zero to remove the limit.
+					max-count=0
+
+					// Sets the threshold, expressed as the number of active client transports per remote address, 
+					// below which binding will always allocate a new instance of client transport without trying/waiting to acquire an existing one. When this number is exceeded then binding will try to acquire an existing
+					// client transport instance for up to ClientTransportExistingAcquisitionTimeoutMs milliseconds.
+					count-wait-threshold=8
+										
+					// Imposes a timeout for binding trying to get an existing transport instance per remote address.
+					// Binding throws ClientCallException when this timeout is exceeded.
+					// A value of zero removes the limit
+					max-existing-acquisition-timeout-ms=0
+
+					// Sets the length of interval for the binding trying to acquire existing client transport instance to make a call.
+					// When this interval is exhausted then binding tries to allocate a new client transport per remote address,
+					// unless other limits prohibit (max transport count). The value has to be greater or equal to zero. 
+					// NOTE: this property works in conjunction with ClientTransportCoutWaitThreshold, if the number of active client transports
+					// is below ClientTransportCoutWaitThreshold, then binding does not wait and allocates a new client transport right away until
+					// ClientTransportCoutWaitThreshold limit is reached, then binding will try to acquire existing transport for ClientTransportExistingAcquisitionTimeoutMs milliseconds.
+		            existing-acquisition-timeout-ms=10
+            
+					rcv-timeout=180000
+					snd-timeout=180000
+				}
+            }
+        }
+    }
+}
