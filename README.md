@@ -1,5 +1,6 @@
 # BLService: Business Logic Server as Windows Service (architectural prototype)
 ## Session authorization manager example
+http://www.codeproject.com/Tips/1072548/Business-Logic-Server-as-Windows-Service-Architect
 
 ### Version
 1.1.1
